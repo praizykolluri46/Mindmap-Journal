@@ -132,8 +132,4 @@ const seeds = [
 - Vanilla JavaScript — Canvas API, LocalStorage, DOM events
 - Google Fonts — Montserrat + Roboto
 
-> **The Mandate: No Frameworks. Master the fundamentals first.** — DecodeLabs
-
----
-
 
