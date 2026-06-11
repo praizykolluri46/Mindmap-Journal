@@ -1,10 +1,5 @@
 # 🧠 MindMap Journal
 
-> A responsive, interactive journal web app built with pure HTML5, CSS3, and Vanilla JavaScript.
-> Created as **Project 1** for the DecodeLabs Full Stack Development Internship — Batch 2026.
-
----
-
 ## 📌 Project Overview
 
 MindMap Journal is a personal journaling app where your entries come to life as an **interactive mind map**. Each journal entry becomes a node on the canvas, colored by mood, and connected to a central hub. It also includes a traditional **Grid View** for browsing entries as cards.
@@ -42,8 +37,6 @@ No build tools, no dependencies, no configuration files needed.
 
 ---
 
-## 🎨 Design System (PDF Pillar 2)
-
 ### Colour Palette — 2025 Aesthetics
 
 | Name | Hex | Meaning |
@@ -62,8 +55,6 @@ No build tools, no dependencies, no configuration files needed.
 > Max 2 font families, 3 weights — per DecodeLabs spec.
 
 ---
-
-## 🏗 Technical Architecture (PDF Pillar 3)
 
 ### HTML5 — Semantic Landmarks
 ```
@@ -145,24 +136,4 @@ const seeds = [
 
 ---
 
-## 📋 DecodeLabs Project Checklist
 
-- [x] Uses HTML, CSS, and basic JavaScript only
-- [x] Responsive layout for different screen sizes
-- [x] Clean and user-friendly UI
-- [x] Semantic HTML5 landmarks
-- [x] Mobile-first strategy
-- [x] 2025 UI/UX colour palette
-- [x] WCAG accessibility compliance
-- [x] Separated into 3 distinct files (HTML / CSS / JS)
-
----
-
-## 👤 Author
-
-**DecodeLabs Intern — Batch 2026**
-Built under the Full Stack Development Industrial Training Program.
-
-📧 decodelabs.tech@gmail.com
-🌐 www.decodelabs.tech
-📍 Greater Lucknow, India
