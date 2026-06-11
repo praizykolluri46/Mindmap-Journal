@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MindMap Journal — DecodeLabs</title>
+
+  <!-- Google Fonts: Montserrat (headlines) + Roboto (body) per PDF Pillar 2 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet" />
+
+  <!-- External stylesheet (PDF: separate CSS file) -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ══ HEADER / NAV — semantic landmark ══ -->
+  <header role="banner">
+    <nav role="navigation" aria-label="Main navigation" id="mainNav">
+      <button class="burger" id="burger" aria-label="Open sidebar" aria-expanded="false" aria-controls="sidebar">
+        <span></span><span></span><span></span>
+      </button>
+
+      <div class="nav-logo" aria-label="MindMap Journal home">
+        Mind<span>Map</span> Journal
+      </div>
+
+      <div class="nav-center" role="tablist" aria-label="View switcher">
+        <button class="view-btn active" data-view="canvas" role="tab" aria-selected="true" aria-controls="canvas-view">
+          🕸 Map View
+        </button>
+        <button class="view-btn" data-view="grid" role="tab" aria-selected="false" aria-controls="grid-view">
+          ⊞ Grid View
+        </button>
+      </div>
+
+      <div class="nav-right">
+        <button class="btn-new" id="openAddModal" aria-label="Create new journal entry" aria-haspopup="dialog">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          New Entry
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Sidebar backdrop (mobile) -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+
+  <!-- ══ APP SHELL — CSS Grid macro layout ══ -->
+  <div class="app-shell">
+
+    <!-- SIDEBAR — aside landmark -->
+    <aside class="sidebar" id="sidebar" aria-label="Journal entries panel">
+
+      <div class="sidebar-header">
+        <p class="sidebar-title">Your Entries</p>
+        <div class="search-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input
+            type="search"
+            class="search-input"
+            id="searchInput"
+            placeholder="Search entries…"
+            aria-label="Search journal entries"
+            autocomplete="off"
+          />
+        </div>
+      </div>
+
+      <div class="mood-filters" aria-label="Filter entries by mood">
+        <p class="sidebar-title" style="margin-bottom:0.6rem;">Filter by mood</p>
+        <div class="mood-row" id="moodFilters" role="group" aria-label="Mood filters">
+          <button class="mood-chip active" data-mood="all">All</button>
+          <button class="mood-chip" data-mood="joy"><span class="dot" style="background:#c8a96e"></span>Joy</button>
+          <button class="mood-chip" data-mood="calm"><span class="dot" style="background:#74c7b8"></span>Calm</button>
+          <button class="mood-chip" data-mood="sad"><span class="dot" style="background:#a0d4e0"></span>Sad</button>
+          <button class="mood-chip" data-mood="angry"><span class="dot" style="background:#c47a5a"></span>Angry</button>
+          <button class="mood-chip" data-mood="anxious"><span class="dot" style="background:#a5856f"></span>Anxious</button>
+          <button class="mood-chip" data-mood="grateful"><span class="dot" style="background:#7bc67e"></span>Grateful</button>
+          <button class="mood-chip" data-mood="inspired"><span class="dot" style="background:#a5856f"></span>Inspired</button>
+          <button class="mood-chip" data-mood="tired"><span class="dot" style="background:#8899aa"></span>Tired</button>
+        </div>
+      </div>
+
+      <div class="entry-list" id="entryList" role="list" aria-label="Journal entry list" aria-live="polite"></div>
+    </aside>
+
+    <!-- ══ MAIN — core narrative landmark ══ -->
+    <main class="main-content" id="mainContent" role="main">
+
+      <!-- Canvas View -->
+      <section id="canvas-view" aria-label="Mind map canvas" role="tabpanel">
+        <canvas id="mindmap" aria-label="Interactive mind map of your journal entries"></canvas>
+
+        <div class="canvas-controls" role="toolbar" aria-label="Map zoom controls">
+          <button class="ctrl-btn" id="zoomIn" aria-label="Zoom in" title="Zoom in">+</button>
+          <button class="ctrl-btn" id="zoomOut" aria-label="Zoom out" title="Zoom out">−</button>
+          <button class="ctrl-btn" id="resetView" aria-label="Reset view" title="Reset view">⌂</button>
+        </div>
+
+        <p class="canvas-hint" aria-hidden="true">Drag to pan · Scroll to zoom · Click a node to read</p>
+        <div class="node-tooltip" id="nodeTooltip" role="tooltip" aria-hidden="true"></div>
+      </section>
+
+      <!-- Grid View -->
+      <section id="grid-view" class="hidden" aria-label="Grid view of entries" role="tabpanel">
+        <div class="grid-entries" id="gridEntries"></div>
+      </section>
+
+      <!-- Stats bar — complementary landmark -->
+      <aside class="stats-bar" role="complementary" aria-label="Journal statistics">
+        <div class="stat-item">
+          <span class="stat-num" id="statTotal" aria-label="Total entries">0</span>
+          <span class="stat-label">Entries</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" id="statStreak" aria-label="Day streak">0</span>
+          <span class="stat-label">Day Streak</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" id="statTopMood" aria-label="Top mood">—</span>
+          <span class="stat-label">Top Mood</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" id="statWords" aria-label="Words written">0</span>
+          <span class="stat-label">Words Written</span>
+        </div>
+      </aside>
+
+    </main>
+  </div>
+
+  <!-- ══ ADD ENTRY MODAL ══ -->
+  <div class="modal-overlay" id="addModal" role="dialog" aria-modal="true" aria-labelledby="addModalTitle">
+    <article class="modal">
+      <header class="modal-header">
+        <h2 class="modal-title" id="addModalTitle">New Entry</h2>
+        <button class="modal-close" id="closeAddModal" aria-label="Close new entry dialog">✕</button>
+      </header>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="entryTitle">Title</label>
+          <input type="text" class="form-input" id="entryTitle" placeholder="What's on your mind today?" maxlength="80" autocomplete="off" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" id="moodLabel">Mood</label>
+          <div class="mood-picker" id="moodPicker" role="radiogroup" aria-labelledby="moodLabel">
+            <button class="mood-option" data-mood="joy" role="radio" aria-checked="false"><span class="emoji">😄</span><span class="mname">Joy</span></button>
+            <button class="mood-option" data-mood="calm" role="radio" aria-checked="false"><span class="emoji">😌</span><span class="mname">Calm</span></button>
+            <button class="mood-option" data-mood="sad" role="radio" aria-checked="false"><span class="emoji">😢</span><span class="mname">Sad</span></button>
+            <button class="mood-option" data-mood="angry" role="radio" aria-checked="false"><span class="emoji">😤</span><span class="mname">Angry</span></button>
+            <button class="mood-option" data-mood="anxious" role="radio" aria-checked="false"><span class="emoji">😰</span><span class="mname">Anxious</span></button>
+            <button class="mood-option" data-mood="grateful" role="radio" aria-checked="false"><span class="emoji">🙏</span><span class="mname">Grateful</span></button>
+            <button class="mood-option" data-mood="inspired" role="radio" aria-checked="false"><span class="emoji">✨</span><span class="mname">Inspired</span></button>
+            <button class="mood-option" data-mood="tired" role="radio" aria-checked="false"><span class="emoji">😴</span><span class="mname">Tired</span></button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="entryBody">Journal Entry</label>
+          <textarea class="form-textarea" id="entryBody" placeholder="Write freely — no judgement here…" aria-describedby="bodyHint"></textarea>
+          <span id="bodyHint" class="sr-only">Write your thoughts, feelings, or observations</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="tagInput">Tags</label>
+          <div class="tags-wrap" id="tagsWrap" role="group" aria-label="Entry tags">
+            <input type="text" class="tag-input" id="tagInput" placeholder="Add tag, press Enter…" aria-label="Add tag" autocomplete="off" />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-cancel" id="cancelAdd">Cancel</button>
+          <button class="btn-save" id="saveEntry">Save Entry</button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <!-- ══ READ ENTRY MODAL ══ -->
+  <div class="modal-overlay" id="readModal" role="dialog" aria-modal="true" aria-labelledby="readModalTitle">
+    <article class="modal">
+      <header class="modal-header">
+        <h2 class="modal-title" id="readModalTitle"></h2>
+        <button class="modal-close" id="closeReadModal" aria-label="Close entry">✕</button>
+      </header>
+      <div class="modal-body">
+        <div class="read-mood-badge" id="readMoodBadge" role="status"></div>
+        <div class="read-body" id="readBody"></div>
+        <div class="read-tags" id="readTags" aria-label="Entry tags"></div>
+        <div class="read-date" id="readDate"></div>
+        <div class="read-actions">
+          <button class="btn-delete" id="deleteEntry" aria-label="Delete this entry">Delete Entry</button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <!-- ══ FOOTER — terminal metadata landmark ══ -->
+  <footer role="contentinfo" class="site-footer">
+    <p>MindMap Journal &copy; 2026 ·<span>DecodeLabs Batch 2026</span></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
